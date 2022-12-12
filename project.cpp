@@ -31,13 +31,14 @@ vector<int> iniciar_matriz(const int n, const int m)
     return _ocupacao;
 }
 
-void limpa_matriz(vector<int> _ocupacao)
+vector<int> limpa_matriz(vector<int> _ocupacao)
 {
     for (int i = 0; i < (int)_ocupacao.size(); i++)
     {
         if (_ocupacao[i] == 1)
             _ocupacao[i] = 0;
     }
+    return _ocupacao;
 }
 
 vector<int> coloca_quadrado(vector<int> _ocupacao, int i, int size_block)
@@ -79,6 +80,8 @@ int prox_vazio(vector<int> _ocupacao)
 long long int calcula_maneiras(vector<int> _ocupacao)
 {
     long long int count = 0;
+
+    _ocupacao = limpa_matriz(_ocupacao);
 
     if (_possibilidades.count(_ocupacao) > 0)
         return _possibilidades[_ocupacao];
