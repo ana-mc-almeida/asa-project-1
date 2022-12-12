@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <map>
 // #include <list>
 using namespace std;
 
@@ -45,6 +46,9 @@ int cabe_bloco(vector<vector<int>> _ocupacao, int i, int j, int size)
     size--;
     if (i + size >= (int)_ocupacao.size() || j + size >= (int)_ocupacao[i].size())
         return 0;
+    for (int y = j; y < j + size; y++)
+        if (!_ocupacao[i][y])
+            return 0;
     return _ocupacao[i][j + size] && _ocupacao[i + size][j + size] && _ocupacao[i + size][j];
 }
 
@@ -127,6 +131,9 @@ int main()
     int n, m, sum;
     // vector<vector<int>> _ocupacao{{0, 0, 0}, {1, 1, 1}, {1, 1, 1}};
     vector<vector<int>> _ocupacao;
+    map<vector<int>, int> _possibilidades;
+
+    _possibilidades.insert(pair<vector<int>, int>({2, 2}, 1));
 
     cin >> n;
     cin >> m;
