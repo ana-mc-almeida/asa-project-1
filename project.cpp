@@ -4,7 +4,7 @@
 // #include <list>
 using namespace std;
 
-map<vector<int>, int> _possibilidades;
+map<vector<int>, long long int> _possibilidades;
 
 void print_matriz(vector<int> matriz)
 {
@@ -46,21 +46,21 @@ void limpa_matriz(vector<int> _ocupacao)
 
 vector<int> coloca_quadrado(vector<int> _ocupacao, int i, int size_block)
 {
-    cout << "COLOCA QUADRADO\n";
-    print_matriz(_ocupacao);
-    cout << "size_block=" << size_block << endl;
-    cout << "i=" << i << endl;
+    // cout << "COLOCA QUADRADO\n";
+    // print_matriz(_ocupacao);
+    // cout << "size_block=" << size_block << endl;
+    // cout << "i=" << i << endl;
     for (int y = 0; y < size_block; y++)
     {
         _ocupacao[i + y] -= size_block;
     }
-    print_matriz(_ocupacao);
+    // print_matriz(_ocupacao);
     return _ocupacao;
 }
 
 int cabe_bloco(vector<int> _ocupacao, int i, int size)
 {
-    cout << "CABE BLOCO\n size=" << size << endl;
+    // cout << "CABE BLOCO\n size=" << size << endl;
     if (size == 1)
         return 1;
     size--;
@@ -76,7 +76,7 @@ int cabe_bloco(vector<int> _ocupacao, int i, int size)
 int prox_vazio(vector<int> _ocupacao)
 {
     // cout << "PROX VAZIO\n";
-    // // cout << "---i-- = " << i << endl;
+    // print_matriz(_ocupacao);
     // // while (_ocupacao[i] == 0 && i < (int)_ocupacao.size())
     // //     i++;
     // // cout << "sai--- com i=" << i << endl;
@@ -86,7 +86,7 @@ int prox_vazio(vector<int> _ocupacao)
     //     i = 0;
     // return i;
     int max = 0, i = 0;
-    for (int x; x < (int)_ocupacao.size(); x++)
+    for (int x = 0; x < (int)_ocupacao.size(); x++)
     {
         if (_ocupacao[x] > max)
         {
@@ -94,46 +94,53 @@ int prox_vazio(vector<int> _ocupacao)
             i = x;
         }
     }
+    // cout << "---i-- = " << i << endl;
     return i;
 }
 
-int calcula_maneiras(vector<int> _ocupacao, int i)
+long long int calcula_maneiras(vector<int> _ocupacao)
 {
-    cout << "ENTREI CALCULA MANEIRAS\n";
+    // cout << "ENTREI CALCULA MANEIRAS\n";
+    // print_matriz(_ocupacao);
 
-    int count = 0;
+    long long int count = 0;
 
-    i = prox_vazio(_ocupacao);
+    if (_possibilidades.count(_ocupacao) > 0)
+    {
+        // cout << "*++------Cromos repetidos não completam cadernetas++++++\n";
+        return _possibilidades[_ocupacao];
+    }
 
-    // if (i >= (int)_ocupacao.size() - 1)
-    //     return 0;
+    int i = prox_vazio(_ocupacao);
 
     if (_ocupacao[i] == 0)
     {
-        cout << "vou sair\n";
+        // cout << "vou sair\n";
         return 0;
     }
 
-    cout << "i=" << i << endl;
+    // cout << "i=" << i << endl;
 
     for (int block_size = _ocupacao[i]; block_size > 1; block_size--)
     {
         if (cabe_bloco(_ocupacao, i, block_size))
         {
-            count += calcula_maneiras(coloca_quadrado(_ocupacao, i, block_size), i + block_size);
+            count += calcula_maneiras(coloca_quadrado(_ocupacao, i, block_size));
             count++;
         }
     }
-    count += calcula_maneiras(coloca_quadrado(_ocupacao, i, 1), i + 1);
+    count += calcula_maneiras(coloca_quadrado(_ocupacao, i, 1));
 
-    cout << "saí calcula maneiras com count=" << count << endl;
-
+    // cout << "saí calcula maneiras com count=" << count << "e matriz = ";
+    // print_matriz(_ocupacao);
+    _possibilidades.insert(pair<vector<int>, long long int>(_ocupacao, count));
     return count;
 }
 
 int main()
 {
-    int n, m, sum;
+    int n, m;
+    long long int sum;
     // vector<vector<int>> _ocupacao{{0, 0, 0}, {1, 1, 1}, {1, 1, 1}};
     vector<int> _ocupacao;
     // map<vector<int>, int> _possibilidades;
@@ -145,15 +152,9 @@ int main()
     // cout << "Ladrilho de " << n << " por " << m << endl;
 
     _ocupacao = iniciar_matriz(n, m);
-    print_matriz(_ocupacao);
+    // print_matriz(_ocupacao);
 
-    // cout << cabe_bloco(0, 0, 2) << endl;
-    // cout << cabe_bloco(0, 2, 3) << endl;
-    // cout << cabe_bloco(2, 1, 2) << endl;
-    // cout << cabe_bloco(0, 1, 3) << endl;
-    // cout <<  cabe_bloco(_ocupacao, 1, 0, 2);
-
-    sum = calcula_maneiras(_ocupacao, 0);
+    sum = calcula_maneiras(_ocupacao);
     if (_ocupacao[n - 1] != 0)
         sum++;
 
