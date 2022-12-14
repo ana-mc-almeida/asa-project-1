@@ -5,29 +5,17 @@ using namespace std;
 
 map<vector<int>, long long int> _possibilidades;
 
-void print_matriz(vector<int> matriz)
-{
-    int n = matriz.size();
-    cout << "Matriz = (";
-    for (int i = 0; i < n; i++)
-    {
-        cout << matriz[i] << " ";
-    }
-    cout << " )" << endl;
-}
-
 vector<int> iniciar_matriz(const int n, const int m)
 {
     int c;
     vector<int> _ocupacao;
-
     _ocupacao.resize(n);
+
     for (int i = 0; i < n; i++)
     {
         cin >> c;
         _ocupacao[i] = c;
     }
-
     return _ocupacao;
 }
 
@@ -44,20 +32,18 @@ vector<int> limpa_matriz(vector<int> _ocupacao)
 vector<int> coloca_quadrado(vector<int> _ocupacao, int i, int size_block)
 {
     for (int y = 0; y < size_block; y++)
-    {
         _ocupacao[i + y] -= size_block;
-    }
     return _ocupacao;
 }
 
-int cabe_bloco(vector<int> _ocupacao, int i, int size)
+int cabe_bloco(vector<int> _ocupacao, int i, int block_size)
 {
-    if (size == 1)
+    if (block_size == 1)
         return 1;
-    size--;
-    if (size + i >= (int)_ocupacao.size())
+    block_size--;
+    if (block_size + i >= (int)_ocupacao.size())
         return 0;
-    for (int x = 0; x <= size; x++)
+    for (int x = 0; x <= block_size; x++)
         if (_ocupacao[i + x] < _ocupacao[i])
             return 0;
     return 1;
@@ -67,13 +53,11 @@ int prox_vazio(vector<int> _ocupacao)
 {
     int max = 0, i = 0;
     for (int x = 0; x < (int)_ocupacao.size(); x++)
-    {
         if (_ocupacao[x] > max)
         {
             max = _ocupacao[x];
             i = x;
         }
-    }
     return i;
 }
 
@@ -92,13 +76,11 @@ long long int calcula_maneiras(vector<int> _ocupacao)
         return 0;
 
     for (int block_size = _ocupacao[i]; block_size > 1; block_size--)
-    {
         if (cabe_bloco(_ocupacao, i, block_size))
         {
             count += calcula_maneiras(coloca_quadrado(_ocupacao, i, block_size));
             count++;
         }
-    }
     count += calcula_maneiras(coloca_quadrado(_ocupacao, i, 1));
 
     _possibilidades.insert(pair<vector<int>, long long int>(_ocupacao, count));
